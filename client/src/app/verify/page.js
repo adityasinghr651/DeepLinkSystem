@@ -20,14 +20,12 @@ function VerifyLogic() {
       try {
         console.log("TOKEN FROM URL 👉", token);
 
-        // ✅ FIXED ENDPOINT
         const res = await api.post("/api/links/verify", { token });
 
         console.log("VERIFY RESPONSE 👉", res.data);
 
         setStatus("valid");
 
-        // ✅ REAL DEEP LINK REDIRECT
         const redirectUrl = res.data.data.redirectUrl;
 
         setTimeout(() => {
@@ -44,30 +42,61 @@ function VerifyLogic() {
   }, [token, router]);
 
   if (status === "checking") {
-    return <div className="text-2xl animate-pulse">🔍 Verifying Secure Link...</div>;
+    return (
+      <div className="relative px-10 py-8 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20
+        shadow-[0_0_60px_-10px_rgba(56,189,248,0.5)] text-center">
+        <p className="text-2xl font-medium text-cyan-300 animate-pulse">
+          Verifying Secure Link
+        </p>
+        <p className="mt-2 text-sm text-neutral-300">
+          Validating authentication token…
+        </p>
+      </div>
+    );
   }
 
   if (status === "invalid") {
     return (
-      <div className="text-center">
-        <h2 className="text-3xl text-red-500 mb-2">❌ Link Expired or Invalid</h2>
-        <p className="text-gray-400">Please request a new link.</p>
+      <div className="relative px-12 py-10 rounded-3xl bg-white/10 backdrop-blur-xl border border-red-400/30
+        shadow-[0_0_70px_-15px_rgba(239,68,68,0.45)] text-center">
+        <h2 className="text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-rose-400 mb-3">
+          Access Denied
+        </h2>
+        <p className="text-neutral-300">
+          This secure link is expired or invalid. Please request a new access link.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="text-center">
-      <h2 className="text-3xl text-green-500 mb-2">✅ Access Granted</h2>
-      <p className="text-gray-400">Redirecting to secure resource...</p>
+    <div className="relative px-12 py-10 rounded-3xl bg-white/10 backdrop-blur-xl border border-green-400/30
+      shadow-[0_0_70px_-15px_rgba(34,197,94,0.45)] text-center">
+      <h2 className="text-3xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-3">
+        Access Granted
+      </h2>
+      <p className="text-neutral-300">
+        Verification successful. Redirecting to the secure resource…
+      </p>
     </div>
   );
 }
 
 export default function VerifyPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <Suspense fallback={<div>Loading...</div>}>
+    <div className="relative min-h-screen flex items-center justify-center bg-neutral-950 text-white overflow-hidden">
+
+      {/* Soft Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:32px_32px]" />
+
+      {/* Ambient Light */}
+      <div className="absolute w-[450px] h-[450px] bg-cyan-400/25 rounded-full blur-[180px] top-1/3 left-1/3 animate-pulse" />
+
+      <Suspense fallback={
+        <div className="text-neutral-400 text-lg animate-pulse">
+          Initializing secure verification…
+        </div>
+      }>
         <VerifyLogic />
       </Suspense>
     </div>
