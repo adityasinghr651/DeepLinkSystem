@@ -118,18 +118,53 @@ A scalable structure designed for team collaboration:
 ```bash
 DeepLinkSystem/
 │
-├── client/                     # Next.js Frontend
-│   ├── src/app/resource/       # Dynamic Route [id]
-│   └── package.json
+├── .gitignore                  # (Crucial) Ignores node_modules & .env
+├── README.md                   # Documentation for GitHub
 │
-└── server/                     # Node.js Backend
-    ├── src/
-    │   ├── config/             # Environment config
-    │   ├── controllers/        # Business logic
-    │   ├── middleware/         # Security & auth
-    │   ├── routes/             # API definitions
-    │   └── app.js              # Entry point
-    └── .env                    # Secrets
+├── client/                     # [Frontend] Next.js App Router
+│   ├── .env.local              # Frontend Secrets (NEXT_PUBLIC_API_URL)
+│   ├── next.config.js          # Next.js Configuration
+│   ├── package.json            # Frontend Dependencies
+│   ├── postcss.config.js       # CSS Config
+│   ├── tailwind.config.js      # Tailwind Config
+│   │
+│   ├── public/                 # Static Assets (Images, Icons)
+│   │   └── next.svg
+│   │
+│   └── src/
+│       ├── lib/                # Utility Functions
+│       │   └── api.js          # Axios Instance (Centralized API)
+│       │
+│       └── app/                # Pages & Routing
+│           ├── globals.css     # Global Styles (Tailwind directives)
+│           ├── layout.js       # Root Layout (Html/Body tags)
+│           ├── page.js         # HOME PAGE (Link Generator)
+│           │
+│           ├── verify/         # Dynamic Route for Verification
+│           │   └── page.js     # Logic: Checks Token & Redirects
+│           │
+│           └── dashboard/      # Protected Resource Area
+│               └── secret-report/
+│                   └── page.js # The "Top Secret" Destination
+│
+└── server/                     # [Backend] Node.js + Express
+    ├── .env                    # Backend Secrets (JWT_SECRET, MONGO_URI)
+    ├── package.json            # Backend Dependencies
+    │
+    └── src/
+        ├── index.js            # Entry Point (Server Start)
+        │
+        ├── config/             # (Optional) Database Config
+        │   └── db.js           # DB Connection logic (if using Mongo)
+        │
+        ├── controllers/        # Business Logic (Brain)
+        │   └── linkController.js # Handles Generate & Verify logic
+        │
+        ├── middleware/         # Security Guards
+        │   └── authMiddleware.js # Checks JWT for protected routes
+        │
+        └── routes/             # API Endpoints
+            └── linkRoutes.js   # Maps URLs to Controllers
 ```
 
 ---
@@ -280,4 +315,5 @@ Contributions are welcome!
   <sub>Built with ❤️ for better web navigation.</sub>
 </div>
 ```
+
 
