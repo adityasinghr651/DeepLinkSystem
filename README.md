@@ -69,52 +69,7 @@ Security: Stack traces are hidden in production.
 
 Observability: Critical errors are logged to monitoring tools automatically before the response is sent.
 ---
-
-sequenceDiagram
-    autonumber
-    participant Client
-    box rgb(240, 248, 255) API Layer (Stateless)
-    participant Middleware as Security Middleware (Interceptor)
-    participant Controller as Controller (Business Logic)
-    participant ErrorHandler as Global Error Handler
-    end
-    box rgb(255, 245, 230) Data Layer
-    participant DB as Database
-    end
-
-    note over Client, DB: Phase 1: Security & Validation
-    Client->>Middleware: Incoming Request (e.g., Click Deep Link) + JWT
-    activate Middleware
-    
-    alt Invalid Token / Security Risk
-        Middleware-->>ErrorHandler: Reject Request (Unauthorized)
-        ErrorHandler-->>Client: 401 Unauthorized JSON Response
-    else Token Validated
-        Middleware->>Controller: Pass Validated Request
-        deactivate Middleware
-        activate Controller
-        
-        note over Controller, DB: Phase 2: State Management (Race Condition Handling)
-        note right of Controller: Avoid "Read-Modify-Write".<br/>Send Atomic Instruction directly.
-        Controller->>DB: Atomic Operation (e.g., increment click count)
-        activate DB
-        
-        alt Database Success
-            DB-->>Controller: Acknowledge Update
-            deactivate DB
-            Controller-->>Client: 200 OK Success JSON Response
-        else Database/Application Failure
-            DB--xController: Throw Exception/Error
-            deactivate DB
-            Controller-->>ErrorHandler: Pass Exception
-            deactivate Controller
-            
-            note over ErrorHandler: Phase 3: Resilience
-            note right of ErrorHandler: Log error silently.<br/>Normalize response format.
-            ErrorHandler-->>Client: 500 Server Error JSON Response
-        end
-    end
-
+  
 ## 🎨 Key Features
 
 - 🚀 **Dynamic Routing:** Instant access to resources via `/resource/:id`
