@@ -278,6 +278,15 @@ Interview Takeaway: This demonstrates a focus on System Stability and Developer 
 
 ---
 
+## Backend Request Flow
+
+1. Request enters through `src/index.js`
+2. Routes are defined in `src/routes/linkRoutes.js`
+3. Authentication is handled by `src/middleware/authMiddleware.js`
+4. Business logic lives in `src/controllers/linkController.js`
+5. Response is sent back to the client
+
+
 ## 🤝 Contributing
 
 Contributions are welcome!

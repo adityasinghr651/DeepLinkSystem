@@ -1,3 +1,6 @@
+// Middleware to verify JWT token before allowing access to protected routes
+
+
 const jwt = require('jsonwebtoken');
 
 const protect = (req, res, next) => {

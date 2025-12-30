@@ -1,3 +1,5 @@
+// This controller handles creation and validation of secure deep links
+
 const jwt = require('jsonwebtoken');
 
 // 1. Create a Magic Deep Link
