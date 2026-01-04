@@ -1,58 +1,101 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Navbar from "../../../components/Navbar";
+import StatsCard from "../../../components/StatsCard";
+import api from "../../../lib/api";
+
 export default function SecretDashboard() {
+  const [stats, setStats] = useState({
+    trustScore: "0%",
+    avgLatency: "0ms",
+    activeSessions: 0,
+  });
+
+  // 🔹 Fetch real stats from backend
+  useEffect(() => {
+    api
+      .get("/links/stats")
+      .then((res) => setStats(res.data))
+      .catch((err) => console.error("STATS ERROR 👉", err));
+  }, []);
+
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-neutral-950 text-white overflow-hidden selection:bg-cyan-400 selection:text-black">
+    <div className="relative min-h-screen bg-black text-white overflow-hidden">
+      <Navbar />
 
-      {/* Grid Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:28px_28px]" />
+      {/* Ambient background glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute w-[520px] h-[520px] bg-green-500/20 rounded-full blur-[200px] top-32 left-1/4" />
+        <div className="absolute w-[420px] h-[420px] bg-blue-500/20 rounded-full blur-[200px] bottom-24 right-1/4" />
+      </div>
+      
+      <main className="relative pt-28 px-4 max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-5
+            border border-green-500/30 bg-green-500/10 rounded-full
+            text-green-400 text-xs tracking-widest uppercase">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            Access Granted via Secure Token
+          </div>
 
-      {/* Ambient Glows */}
-      <div className="absolute w-[420px] h-[420px] bg-indigo-500/30 rounded-full blur-[160px] top-1/4 left-1/4 animate-pulse" />
-      <div
-        className="absolute w-[420px] h-[420px] bg-cyan-500/30 rounded-full blur-[160px] bottom-1/4 right-1/4 animate-pulse"
-        style={{ animationDelay: "2s" }}
-      />
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-4
+            bg-clip-text text-transparent bg-gradient-to-b from-white via-gray-200 to-gray-500">
+            Confidential Analytics
+          </h1>
 
-      {/* Main Card */}
-      <div className="relative z-10 max-w-2xl w-full mx-4 p-14 rounded-[2.5rem] border border-white/15 bg-white/5 backdrop-blur-2xl shadow-[0_0_80px_-20px_rgba(34,211,238,0.45)]">
-
-        {/* Security Badge */}
-        <div className="inline-flex mb-8 px-5 py-1.5 rounded-full text-[11px] tracking-[0.3em] font-mono uppercase
-          border border-cyan-400/40 text-cyan-300 bg-cyan-400/10
-          shadow-[0_0_20px_rgba(34,211,238,0.35)]">
-          Secure Area
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            This data is encrypted and only accessible via a signed JWT deep link.
+            If you are seeing this, your signature verification was successful.
+          </p>
         </div>
 
-        {/* Title */}
-        <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-8">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-cyan-300 to-indigo-400 bg-[length:220%_auto] animate-shimmer">
-            Authorized
-          </span>
-        </h1>
+        {/* Dashboard Grid (REAL DATA) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <StatsCard
+            title="User Trust Score"
+            value={stats.trustScore}
+            icon="🛡️"
+            color="blue"
+          />
+          <StatsCard
+            title="Deep Link Latency"
+            value={stats.avgLatency}
+            icon="⚡"
+            color="green"
+          />
+          <StatsCard
+            title="Active Sessions"
+            value={stats.activeSessions}
+            icon="🟢"
+            color="purple"
+          />
+        </div>
 
-        {/* Professional Message */}
-        <p className="text-lg md:text-xl text-neutral-300 leading-relaxed max-w-xl mx-auto">
-          You have successfully accessed a protected route.
-          <br />
-          This confirms that the <span className="text-white font-medium">deep-link authentication</span> and
-          routing logic are functioning as intended.
-        </p>
+        {/* Decrypted Data Section */}
+        <div className="mt-10 p-8 rounded-3xl
+          bg-gradient-to-br from-gray-900/70 to-black/70
+          border border-white/10 backdrop-blur-xl
+          shadow-[0_0_60px_-20px_rgba(34,197,94,0.35)]">
 
-        {/* Divider Glow */}
-        <div className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent" />
-      </div>
+          <h3 className="text-xl font-bold mb-4
+            bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-500">
+            Decrypted Payload Data
+          </h3>
 
-      {/* Shimmer Animation */}
-      <style>{`
-        @keyframes shimmer {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 220% 50%; }
-        }
-        .animate-shimmer {
-          animation: shimmer 3.2s linear infinite;
-        }
-      `}</style>
+          <div className="font-mono text-sm text-gray-300
+            bg-black/70 p-5 rounded-xl
+            border border-gray-800 leading-relaxed">
+{`{
+  "status": "authenticated",
+  "role": "admin_viewer",
+  "encryption": "AES-256",
+  "source": "deep_link_v1"
+}`}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

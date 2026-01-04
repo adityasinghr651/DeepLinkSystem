@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { generateLink, verifyLink} = require('../controllers/linkController');
+const { generateLink, verifyLink, getStats } = require('../controllers/linkController');
+
 
 const { protect } = require('../middleware/authMiddleware');
 
@@ -10,9 +11,8 @@ router.post('/generate', generateLink);
 // GET /api/links/:id -> Get link details by ID
 router.post('/verify', verifyLink);
 
-// 👇 ADDED THIS NEW PROTECTED ROUTE 👇
-// This route uses the 'protect' middleware. 
-// It will only work if the request has a valid Authorization header.
+router.get('/stats', getStats);
+
 router.get('/profile', protect, (req, res) => {
     res.json({ 
         success: true,

@@ -18,11 +18,11 @@ function VerifyLogic() {
 
     const verifyToken = async () => {
       try {
-        console.log("TOKEN FROM URL 👉", token);
+        console.log("TOKEN FROM URL ", token);
 
-        const res = await api.post("/api/links/verify", { token });
+        const res = await api.post("links/verify", { token });
 
-        console.log("VERIFY RESPONSE 👉", res.data);
+        console.log("VERIFY RESPONSE ", res.data);
 
         setStatus("valid");
 
@@ -33,7 +33,7 @@ function VerifyLogic() {
         }, 2000);
 
       } catch (error) {
-        console.error("VERIFY ERROR 👉", error.response?.data || error.message);
+        console.error("VERIFY ERROR ", error.response?.data || error.message);
         setStatus("invalid");
       }
     };
